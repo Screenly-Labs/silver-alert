@@ -1,0 +1,34 @@
+{
+  "name": "screenly-silver-alert-app",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint --error-on-warnings .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "sync-fonts": "bun run sync-fonts.js",
+    "build": "bun run build.js",
+    "dev": "bun run build.js && bun run scraper/scrape.ts && bunx serve dist",
+    "scrape": "bun run scraper/scrape.ts"
+  },
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "@screenly-labs/signage-kit": "github:Screenly-Labs/signage-kit#2026.10.0",
+    "qrcode-generator": "^2.0.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@csstools/postcss-cascade-layers": "^6.0.2",
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/bun": "^1.4.2",
+    "browserslist": "^4.29.3",
+    "esbuild": "^0.28.2",
+    "lightningcss": "^1.33.0",
+    "parse5": "^8.0.1",
+    "postcss": "^8.5.29",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  }
+}

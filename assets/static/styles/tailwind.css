@@ -1,0 +1,502 @@
+/* =========================================================================
+   Screenly Silver Alert — "The Bulletin", in Silver Alert blue
+   The missing-children design, retuned for Florida's Silver Alerts: one person
+   per load on a warm paper ground, the photo mounted large like a poster plate,
+   the name set big in Bricolage Grotesque, and three plain facts beneath it
+   (age now, missing since, missing from). A deep-blue "Silver Alert" flag heads
+   the page and a dark ink band anchors the foot with 911 and FDLE's missing
+   persons line. Calm on purpose: one quiet fade as the person appears, no
+   motion that competes with the face. Tuned for unattended signage: legible at
+   distance, no interaction, both orientations.
+   ========================================================================= */
+
+@import 'tailwindcss';
+/* Shared base (brand/font tokens + fluid root + the degraded-mode kill-switch),
+   the canonical @font-face set, and the standardized footer badge, all from
+   @screenly-labs/signage-kit. The design identity below stays per-app. */
+@import '@screenly-labs/signage-kit/styles/preset.css';
+@import '@screenly-labs/signage-kit/styles/fonts.css';
+@import '@screenly-labs/signage-kit/styles/brand.css';
+
+@theme {
+  --color-paper: #f6f2ea;
+  --color-paper-deep: #e9e2d4;
+  --color-ink: #1b1916;
+  --color-ink-dim: #5c564c;
+  --color-signal: #24507f;
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.18em;
+  }
+}
+
+@layer components {
+  /* Three rows: masthead, the case (or the appeal), the hotline band. */
+  .board {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    /* Exactly one viewport tall, never taller: the hotline band (and the badge
+       inside it) must sit on the bottom edge at any window shape. If the card
+       ever needs more room it is clipped, rather than pushing the band off. */
+    height: 100vh; /* fallback for engines below the svh floor (~2018 players) */
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem 2.2rem 0;
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-dim);
+  }
+
+  .eyebrow__flag {
+    padding: 0.35em 0.75em 0.3em;
+    border-radius: 0.2em;
+    background-color: var(--color-signal);
+    color: var(--color-paper);
+    letter-spacing: 0.24em;
+  }
+
+  /* ---- The case: photo plate beside the details (landscape), stacked in
+     portrait. */
+  /* --fit (0.45..1) is set by main.ts: it scales every size inside the card,
+     via --u, down until the card fits the space between the masthead and the
+     hotline band at any window shape. Sizes below are in --u, not rem. */
+  .card {
+    --fit: 1;
+    --u: calc(1rem * var(--fit));
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: calc(2.6 * var(--u));
+    padding: calc(1.2 * var(--u)) calc(2.2 * var(--u));
+    min-height: 0;
+  }
+
+  .photo {
+    position: relative;
+    flex: none;
+    /* The plate is sized off the shorter axis so it reads the same in both
+       orientations; 4:5 matches FDLE's 200x250 portrait photos. */
+    /* Explicit width/height rather than aspect-ratio, which is above the
+       support floor (Chrome 88 / Safari 15). */
+    height: calc(min(64vh, 70vw) * var(--fit));
+    width: calc(calc(min(64vh, 70vw) * 0.8) * var(--fit));
+    margin: 0;
+    overflow: hidden;
+    border-radius: calc(0.35 * var(--u));
+    background-color: var(--color-paper-deep);
+    box-shadow:
+      0 0 0 calc(0.35 * var(--u)) var(--color-paper),
+      0 0 0 calc(calc(0.35 * var(--u)) + 1px) rgb(27 25 22 / 0.18),
+      0 calc(1.2 * var(--u)) calc(2.4 * var(--u)) -1rem rgb(27 25 22 / 0.35);
+  }
+
+  .photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .photo[data-state='ready'] .photo__img {
+    opacity: 1;
+  }
+
+  /* Initials stand in while the photo loads, or when there is none. */
+  .photo__initials {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: calc(4 * var(--u));
+    letter-spacing: 0.04em;
+    color: rgb(27 25 22 / 0.28);
+  }
+
+  .details {
+    min-width: 0;
+    max-width: calc(32 * var(--u));
+  }
+
+  .details__ask {
+    font-weight: 600;
+    font-size: calc(0.95 * var(--u));
+    letter-spacing: 0.04em;
+    color: var(--color-signal);
+  }
+
+  .details__name {
+    margin-top: calc(0.3 * var(--u));
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(3.4 * var(--u));
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  .details__duration {
+    margin-top: calc(0.6 * var(--u));
+    font-weight: 500;
+    font-size: calc(1.05 * var(--u));
+    color: var(--color-ink-dim);
+  }
+
+  .facts {
+    display: grid;
+    gap: calc(0.75 * var(--u));
+    margin-top: calc(1.6 * var(--u));
+    padding-top: calc(1.3 * var(--u));
+    border-top: 2px solid var(--color-ink);
+  }
+
+  .facts__row {
+    display: grid;
+    grid-template-columns: calc(9.5 * var(--u)) 1fr;
+    align-items: baseline;
+    gap: calc(1 * var(--u));
+  }
+
+  .facts dt {
+    font-weight: 600;
+    font-size: calc(0.72 * var(--u));
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-dim);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+    font-size: calc(1.3 * var(--u));
+  }
+
+  /* QR code for FDLE's flyer, so a passerby can take the alert with them. The code sits on a white tile (scanners want a light quiet zone). */
+  .poster {
+    display: flex;
+    align-items: center;
+    gap: calc(1 * var(--u));
+    margin-top: calc(1.5 * var(--u));
+    text-decoration: none;
+  }
+
+  /* The px floor keeps every module at 2+ device pixels on the smallest
+     panels, where the rem size alone would be too small to scan. */
+  .poster__qr {
+    flex: none;
+    width: max(calc(5.2 * var(--u)), 92px);
+    height: max(calc(5.2 * var(--u)), 92px);
+    padding: calc(0.35 * var(--u));
+    border-radius: calc(0.2 * var(--u));
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgb(27 25 22 / 0.18);
+  }
+
+  .poster__qr svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .poster__text {
+    display: grid;
+    gap: calc(0.25 * var(--u));
+    min-width: 0;
+    text-align: left;
+  }
+
+  .poster__label {
+    font-weight: 600;
+    font-size: calc(0.85 * var(--u));
+    color: var(--color-ink);
+  }
+
+  .poster__url {
+    font-size: calc(0.68 * var(--u));
+    color: var(--color-ink-dim);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- The appeal: shown only when there is nothing to show (feed
+     unreachable or stale, no active alerts, or no JS via the <noscript> rule in
+     index.html). While loading the middle stays empty, so a normal load goes
+     straight to the person with no interstitial. */
+  .appeal {
+    display: none;
+    align-content: center;
+    justify-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 2.2rem;
+    text-align: center;
+  }
+
+  .appeal__title {
+    max-width: 18em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .appeal__text {
+    max-width: 30em;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--color-ink-dim);
+    text-wrap: pretty;
+  }
+
+  html[data-state='ready'] .card {
+    display: flex;
+  }
+
+  html[data-state='offline'] .appeal {
+    display: grid;
+  }
+
+  /* ---- The hotline band: always on screen. The Screenly badge lives inside
+     it, in flow (see the unlayered override at the end), so its white wordmark
+     always sits on the dark band, never on the paper. */
+  .hotline {
+    /* Pinned to the last row: while loading, neither the card nor the appeal
+       is displayed, and the band would otherwise flow into the empty middle. */
+    grid-row: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 2rem;
+    padding: 1.1rem 2.2rem;
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .hotline__call {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .hotline__number {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    color: #fff;
+  }
+
+  .hotline__digits {
+    color: rgb(246 242 234 / 0.75);
+    font-variant-numeric: tabular-nums;
+    /* Never break a phone number across lines on narrow portrait panels. */
+    white-space: nowrap;
+  }
+
+  .hotline__credit {
+    font-size: 0.68rem;
+    color: rgb(246 242 234 / 0.75);
+  }
+
+  /* Portrait: stack the plate over the details and let the photo grow with the
+     width instead of the height. */
+  @media (orientation: portrait) {
+    .card {
+      flex-direction: column;
+      gap: calc(1.8 * var(--u));
+      text-align: center;
+    }
+
+    .photo {
+      width: calc(min(56vw, 34vh) * var(--fit));
+      height: calc(calc(min(56vw, 34vh) * 1.25) * var(--fit));
+    }
+
+    .details {
+      max-width: calc(34 * var(--u));
+    }
+
+    .poster {
+      justify-content: center;
+    }
+
+    .facts__row {
+      grid-template-columns: 1fr 1fr;
+      text-align: left;
+    }
+
+    .hotline {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  /* Small portrait screens (the 480x800 Pi panel rotated): the root size is at
+     its floor here, so shrink the plate and the type so the hotline band stays
+     on screen. */
+  @media (orientation: portrait) and (max-height: 1000px) {
+    .card {
+      gap: calc(1 * var(--u));
+      padding-block: calc(0.8 * var(--u));
+    }
+
+    .photo {
+      width: calc(30vh * var(--fit));
+      height: calc(37.5vh * var(--fit));
+    }
+
+    .details__name {
+      font-size: calc(2.2 * var(--u));
+    }
+
+    .details__duration {
+      margin-top: calc(0.3 * var(--u));
+    }
+
+    .facts {
+      margin-top: calc(0.8 * var(--u));
+      padding-top: calc(0.7 * var(--u));
+      gap: calc(0.35 * var(--u));
+    }
+
+    .facts dd {
+      font-size: calc(1.1 * var(--u));
+    }
+
+    .poster {
+      margin-top: calc(0.7 * var(--u));
+    }
+
+    .poster__qr {
+      width: max(calc(4.4 * var(--u)), 92px);
+      height: max(calc(4.4 * var(--u)), 92px);
+    }
+
+    .hotline {
+      padding-block: 0.8rem;
+    }
+  }
+
+  /* Short landscape screens (the 800x480 Pi panel): tighten the vertical rhythm
+     so the details never push the hotline off screen. */
+  @media (orientation: landscape) and (max-height: 560px) {
+    .masthead {
+      padding-top: 1rem;
+    }
+
+    .card {
+      padding-block: calc(0.5 * var(--u));
+    }
+
+    .hotline {
+      padding-block: 0.7rem;
+    }
+
+    .details__name {
+      font-size: calc(2.6 * var(--u));
+    }
+
+    .facts {
+      margin-top: calc(0.8 * var(--u));
+      padding-top: calc(0.7 * var(--u));
+      gap: calc(0.3 * var(--u));
+    }
+
+    .poster {
+      margin-top: calc(0.7 * var(--u));
+    }
+
+    .poster__qr {
+      width: max(calc(4.4 * var(--u)), 92px);
+      height: max(calc(4.4 * var(--u)), 92px);
+    }
+  }
+}
+
+@layer base {
+  /* One calm fade as the person appears, keyed off the ready flag main.ts sets.
+     Gated for reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-state='ready'] .card .photo {
+      animation: settle 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    html[data-state='ready'] .card .details {
+      animation: settle 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 120ms both;
+    }
+  }
+
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* =========================================================================
+   Degraded mode — old/weak signage players (html.legacy set by the inline gate
+   injected at build from @screenly-labs/signage-kit). The kit's kill-switch
+   drops every animation and transition; the photo fades in via a transition,
+   so give it its resting state explicitly once it has loaded.
+   ========================================================================= */
+html.legacy .photo[data-state='ready'] .photo__img {
+  opacity: 1;
+}
+
+/* =========================================================================
+   Screenly badge, placed in the hotline band. The kit's brand.css pins .brand
+   to the viewport corner (position: fixed), which put the white wordmark on
+   the light paper whenever the band was not flush with the bottom edge. Here
+   it is a flex item at the end of the band instead. Unlayered, like brand.css,
+   so it wins over it on specificity.
+   ========================================================================= */
+.hotline .brand {
+  position: static;
+  margin-left: auto;
+  align-self: center;
+}
+
+@media (orientation: portrait) {
+  .hotline .brand {
+    margin-left: 0;
+  }
+}
