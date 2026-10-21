@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Silver Alert — Screenly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A full-screen Florida Silver Alert board for digital signage — one missing older adult from the Florida Department of Law Enforcement's current Silver Alerts on each load."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='4' fill='%2324507f'/%3E%3Ccircle cx='16' cy='13' r='5' fill='%23f6f2ea'/%3E%3Cpath d='M7 27c1.5-5 5-7.5 9-7.5s7.5 2.5 9 7.5z' fill='%23f6f2ea'/%3E%3C/svg%3E"
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/bricolage-grotesque-latin-standard-normal.woff2?v=__ASSET_VERSION__"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/hanken-grotesk-latin-wght-normal.woff2?v=__ASSET_VERSION__"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/static/styles/main.css?v=__ASSET_VERSION__" />
+    <script src="/static/js/main.js?v=__ASSET_VERSION__" defer></script>
+  </head>
+  <body>
+    <main class="board">
+      <header class="masthead">
+        <p class="eyebrow">
+          <span class="eyebrow__flag">Silver Alert</span>
+          <span>Florida</span>
+        </p>
+      </header>
+
+      <!-- Shown once main.ts has picked an alert (html[data-state="ready"]). -->
+      <article class="card" id="sa-card">
+        <figure class="photo" id="sa-photo-frame" data-state="empty">
+          <span class="photo__initials" id="sa-initials" aria-hidden="true"></span>
+          <img class="photo__img" id="sa-photo" alt="" />
+        </figure>
+
+        <div class="details">
+          <p class="details__ask">Have you seen this person?</p>
+          <h1 class="details__name" id="sa-name"></h1>
+          <p class="details__duration" id="sa-duration"></p>
+
+          <dl class="facts">
+            <div class="facts__row">
+              <dt>Age now</dt>
+              <dd id="sa-age"></dd>
+            </div>
+            <div class="facts__row">
+              <dt>Missing since</dt>
+              <dd id="sa-date"></dd>
+            </div>
+            <div class="facts__row">
+              <dt>Missing from</dt>
+              <dd id="sa-place"></dd>
+            </div>
+          </dl>
+
+          <a
+            class="poster"
+            id="sa-flyer"
+            href="https://mepic.fdle.state.fl.us/currentSilverAlerts.asp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="poster__qr" id="sa-qr" aria-hidden="true"></span>
+            <span class="poster__text">
+              <span class="poster__label">Scan for the FDLE flyer</span>
+              <span class="poster__url" id="sa-flyer-url">mepic.fdle.state.fl.us</span>
+            </span>
+          </a>
+        </div>
+      </article>
+
+      <!-- Shown only when there is nothing to show (offline, stale data, no alerts, no JS). -->
+      <noscript><style>.appeal { display: grid; }</style></noscript>
+      <section class="appeal" aria-labelledby="appeal-title">
+        <h2 class="appeal__title" id="appeal-title">Help bring them home safely.</h2>
+        <p class="appeal__text">
+          Florida&#39;s Silver Alert helps find older adults with dementia who have gone missing,
+          often by car. If you see someone who may be lost and confused, call 911.
+        </p>
+      </section>
+
+      <footer class="hotline">
+        <p class="hotline__call">
+          Call 911 or <strong class="hotline__number">1-888-FL-MISSING</strong>
+          <span class="hotline__digits">(1-888-356-4774)</span>
+        </p>
+        <p class="hotline__credit">
+          Alert data from the
+          <a href="https://www.fdle.state.fl.us/mepic" target="_blank" rel="noopener noreferrer"
+            >Florida Department of Law Enforcement</a
+          >
+        </p>
+        <a
+          class="brand"
+          href="https://www.screenly.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Screenly — opens in a new tab"
+        >
+          <img src="/static/images/screenly-logo.svg?v=__ASSET_VERSION__" alt="Screenly" />
+        </a>
+      </footer>
+
+    </main>
+  </body>
+</html>

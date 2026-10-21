@@ -1,0 +1,13 @@
+{
+  "manifestVersion": "1",
+  "id": "silver-alert",
+  "name": "Florida Silver Alert",
+  "description": "A full-screen Silver Alert board for any display in Florida. Each time it loads it shows one person from the Florida Department of Law Enforcement's current Silver Alerts, newest alerts first, with a photo, their age, when and where they went missing, a QR code for the official FDLE flyer, and a call to 911 or 1-888-FL-MISSING. Silver Alerts help find older adults with dementia who have gone missing.",
+  "summary": "Help find missing older adults in Florida from any screen.",
+  "vendor": "Screenly",
+  "tags": ["Community", "Public Safety"],
+  "homepage": "https://silver-alert.srly.io/",
+  "source": "https://github.com/Screenly-Labs/silver-alert",
+  "support": "https://github.com/Screenly-Labs/silver-alert/issues",
+  "launch": { "baseUrl": "https://silver-alert.srly.io/" }
+}
