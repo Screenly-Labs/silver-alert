@@ -19,10 +19,10 @@
     "qrcode-generator": "^2.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.2",
     "@csstools/postcss-cascade-layers": "^6.0.2",
     "@tailwindcss/cli": "^4.3.3",
-    "@types/bun": "^1.4.2",
+    "@types/bun": "^1.4.4",
     "browserslist": "^4.29.3",
     "esbuild": "^0.28.2",
     "lightningcss": "^1.33.0",
